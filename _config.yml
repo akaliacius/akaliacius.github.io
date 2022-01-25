@@ -26,7 +26,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   software to handle big data and high traffic demands  
   using the latest technologies in the most amazing projects
   in the industry.
-baseurl: "/" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jgeek.dev" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: kaliacius
 github_username: akaliacius
