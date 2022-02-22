@@ -1,22 +1,32 @@
 ---
 layout: post
-title:  "Java Streams, RxJava and CompletableFutures similarities and differences"
+title:  "Java Streams, RxJava and CompletableFutures"
+description: Find out what are similarities and differences between these concepts
 date:   2022-01-25 16:58:28 +0000
 categories: jekyll update
+permalink: /:year/:title.jGeek/
+tags: Java RxJava Stream
 ---
 
 ## Data
+
+![Data fiction](/assets/img/data.jpg){:class="img-responsive"}
+
 The good thing is that all 3 concepts offer us a **lazy evaluation** in contrast 
 to classical eager iterables. The difference between them is the channels they offer to us.
 Let's dive into each of them and discuss these channels 
+
 ### Stream
+
 Streams have only **data chanel** which can be represented in three formats
 * Zero data - `Stream.empty()`
 * Single data - `Stream.of("single data")`
 * Multiple data - `Stream.generate(() -> UUID.randomUUID()).limit(10)`
+
 ### RxJava
+
 RxJava, on the other hand, has three channels to offer
-* data chanel
+* data channel
 * error channel
 * complete chanel
 
@@ -28,6 +38,7 @@ Data channel is same as Stream has
 * Multiple data - `Observable.fromCallable(() -> UUID.randomUUID()).take(10)`
 
 ### CompletableFuture
+
 And the last that not the least CompletableFuture (CF), same as RxJava, has three channels 
 * data chanel
 * error channel
@@ -50,13 +61,13 @@ We want to perform few steps with this data. Here is pseudocode
 Very simple, right? Let's use Stream API first
 ```java
 datastore.stream()
-      .map(i -> i*i)
+      .map(i -> i * i)
       .forEach(System.out::println);
 ```
 Nice and tidy! Now give a go to RxJava, shall we?
 ```java
 Observable.fromIterable(datastore)
-      .map(i -> i*i)
+      .map(i -> i * i)
       .subscribe(System.out::println);
 ```
 Pretty same as Stream. Easy and self declarative with functional flavour.
@@ -68,7 +79,7 @@ ways. If you know, please share it in comments.
 List<CompletableFuture<Void>> tasks = new LinkedList<>();
 datastore.forEach(integer ->
   tasks.add(CompletableFuture.supplyAsync(() -> integer)
-    .thenApply(i -> i*i)
+    .thenApply(i -> i * i)
     .thenAccept(System.out::println)
 ));
 CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0]));
@@ -76,27 +87,35 @@ CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0]));
 That is hideous, isn't it? We need to introduce additional collection to keep references
 to all CompletableFutures, so we can combine them together. Also, we had to iterate our data store
 in an imperative fashion.
+
 ## Error handling
+
+![Error](/assets/img/error.png){:class="img-responsive" width="100%" height="300px"}
+
+
 ## Sync and Async vs Sequential and Parallel
+
 ### Stream
+
 Java streams can be either sequential or parallel. Let's look at the simple example bellow. 
 I create a stream of random UUID strings and perform few transformations using `map()` function. 
 Streams are sequential by default, therefore 
 ```java
 Stream.generate(() -> UUID.randomUUID().toString())
-      .limit(10)
+      .limit(3)
       .map(String::toLowerCase)
       .peek(uuid -> System.out.println(Thread.currentThread().getName() + " uuid:" + uuid))
       .map(String::length)
       .count();
 ```
+\
 In the following output we can see that all transformations happened on **main** thread.
 ```
 main uuid:f5ef4383-76c4-473e-8a44-c4c02fa2ca72
 main uuid:43a4eb4f-f97d-4252-ae85-d0eafc666eb3
 main uuid:dd6c26a4-6f5a-43df-be7e-2f8f26685c09
 ```
----
+\
 Java Stream provides us with `parallel()` method to make our pipeline parallel. 
 Next code snippet is exactly the same as previous with one extra line where parallel method 
 has been introduced.
