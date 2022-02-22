@@ -13,13 +13,9 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-site:
-  author:
-    name: Andrius Kaliacius
-    email: "a.kaliacius@gmail.com"
-
-title: Title
-email: a.kaliacius@gmail.com.com
+author: Andrius Kaliacius
+title: Reactive, Event-driven Systems on JVM
+email: a.kaliacius@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   I help passionate Java developers to develop reactive, 
   event-driven applications, so they can develop modern 
