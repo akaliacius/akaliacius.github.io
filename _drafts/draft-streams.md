@@ -8,9 +8,13 @@ permalink: /:year/:title.jGeek/
 tags: Java RxJava Stream
 ---
 
-## Data
+[Data Channels](#data)
 
-![Data fiction](/assets/img/data.jpg){:class="img-responsive"}
+[Error handling](#errors)
+
+[Sync and Async vs Sequential and Parallel](#sync)
+
+## <a name="data"></a> Data Channels
 
 The good thing is that all 3 concepts offer us a **lazy evaluation** in contrast 
 to classical eager iterables. The difference between them is the channels they offer to us.
@@ -88,12 +92,12 @@ That is hideous, isn't it? We need to introduce additional collection to keep re
 to all CompletableFutures, so we can combine them together. Also, we had to iterate our data store
 in an imperative fashion.
 
-## Error handling
+## <a name="errors"></a> Error handling
 
 ![Error](/assets/img/error.png){:class="img-responsive" width="100%" height="300px"}
 
 
-## Sync and Async vs Sequential and Parallel
+## <a name="sync"></a> Sync and Async vs Sequential and Parallel
 
 ### Stream
 
