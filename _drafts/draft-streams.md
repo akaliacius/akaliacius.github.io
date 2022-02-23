@@ -3,8 +3,8 @@ layout: post
 title:  "Java Streams, RxJava and CompletableFutures"
 description: Find out what are similarities and differences between these concepts
 date:   2022-01-25 16:58:28 +0000
-categories: jekyll update
-permalink: /:year/:title.jGeek/
+category: rxjava
+permalink: /:year/:month/:day/:title/
 tags: Java RxJava Stream
 ---
 

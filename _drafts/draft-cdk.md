@@ -3,8 +3,8 @@ layout: post
 title:  "Deploy like a rockstar with AWS Cloud Development Kit"
 description: Find out what are similarities and differences between these concepts
 date:   2022-02-22 10:14:28 +0000
-categories: jekyll update
-permalink: /:year/:title.jGeek/
+category: cloud
+permalink: /:year/:month/:day/:title/
 ---
 [click here](##something)
 
