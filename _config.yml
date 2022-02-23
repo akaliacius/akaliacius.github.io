@@ -14,12 +14,11 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 author: Andrius Kaliacius
-title: Reactive, Event-driven Systems on JVM
+title: Reactive with Java
 email: a.kaliacius@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  I help passionate Java developers to develop reactive, 
-  event-driven applications, so they can develop modern 
-  software to handle big data and high traffic demands  
+  I help passionate Java developers to adopt reactive programming, 
+  so they can build modern, scalable and resilient applications
   using the latest technologies in the most amazing projects
   in the industry.
 baseurl: "" # the subpath of your site, e.g. /blog
