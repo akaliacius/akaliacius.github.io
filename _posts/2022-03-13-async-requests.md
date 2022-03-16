@@ -5,7 +5,7 @@ description: Send long blocking requests asynchronously with RxJava and Vertx
 date:   2022-03-16 12:15:28 +0000 
 category: rxjava
 author: andrius kaliacius
-permalink: /:year/:month/:day/:title
+permalink: /:year/:month/:day/:title/
 tags: rxjava, vertx, async, java
 ---
 
