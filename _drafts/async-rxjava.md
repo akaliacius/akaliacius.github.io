@@ -1,24 +1,42 @@
 ---
-layout: post title:  "Asynchronous HTTP requests with RxJava"
-description: Make long-lasting requests without blocking main thread date:   2022-03-08 15:15:28 +0000 category: cloud
+layout: post 
+title:  Asynchronous HTTP requests with RxJava
+description: Long requests without blocking thread 
+date:   2022-03-16 12:15:28 +0000 
+category: rxjava
+author: andrius kaliacius
 permalink: /:year/:month/:day/:title/
+tags: rxjava, vertx, async, java
 ---
 
-Let's say we develop a service which has to interact with other components. Unfortunately, those components are
-long-running. Maybe it's legacy service which is very slow, or some slow API that we have no control on, but must use
-it. In this article we will call 2 API and one of blocks for 2 seconds and another for 5 seconds. We also need to print
-response status codes once both responses are available. If we do it old fashion not reactive way we would block calling
+## Overview
+
+Let's say we develop a service that has to interact with other components. Unfortunately, those components are
+slow and blocking.
+
+It may be a legacy service that is very slow or some blocking API that we must use regardless we have no control 
+over it. In this post, we will call 2 APIs. One of them will block for 2 seconds and another for 5 seconds. 
+
+We also need to print
+response status codes once both responses are available. If we do it in the old fashion, non-reactive way we 
+would block a calling
 thread for five seconds. Holding thread for five seconds is not efficient, is it?
 
+![event](/assets/img/2022-03/requests.jpg){:class="img-responsive" width="100%"}
+
+
+
+---
 ## Services
 
-I use [httpstat.us](http://httpstat.us/) as a web service. This is simple service for generating different HTTP codes.
-It is possible to provide additional parameters, in this case,
-`sleep` that blocks HTTP requests for provided amount of time.
+I used [httpstat.us](http://httpstat.us/) as a web service. This is a simple service for generating different 
+HTTP codes to test web clients.
+It is possible to provide extra parameters, in this case,
+`sleep` that blocks HTTP requests for a provided amount of time.
 
-To demonstrate [httpie](https://httpie.io/)
+Let's use [httpie](https://httpie.io/) to test both services 
 
-Service 1 will block for 5 seconds and return response with status code 200
+Service 1 will block for 5 seconds and return a response with status code 200
 
 ```
 
@@ -37,7 +55,7 @@ Set-Cookie: ARRAffinity=e2c17206c539113795daf64bd958d003f2b29b9f62da53617beea054
 
 ```
 
-Service 2 is identical to previous except that it blocks for 2 seconds instead of 5.
+Service 2 is identical to the previous one except that it blocks for 2 seconds instead of 5.
 
 ```
 
@@ -56,10 +74,14 @@ Set-Cookie: ARRAffinity=e2c17206c539113795daf64bd958d003f2b29b9f62da53617beea054
 
 ```
 
+
+
+---
 ## Web Client
 
-Okay, we have learned about services lets discuss web client. In this post, I
-used [Vert.x Web Client](https://vertx.io/docs/vertx-web-client/java/). It is asynchronous, easy to use HTTP and HTTP/2
+We have learned about services let's discuss web client. In this post, 
+I used [Vert.x Web Client](https://vertx.io/docs/vertx-web-client/java/). It is asynchronous, 
+easy to use HTTP and HTTP/2
 client that supports RxJava too.
 
 ```java
@@ -67,31 +89,41 @@ client that supports RxJava too.
 private static Single<Integer> service1(WebClient webClient) {
         return webClient.getAbs("http://httpstat.us/200?sleep=5000")
                 .rxSend()
-                .doOnSuccess(response -> out.println(Thread.currentThread().getName() + " service 1 invoked"))
+                .doOnSuccess(response -> out.println("[" + Thread.currentThread().getName() + "] service 1: response received"))
                 .map(HttpResponse::statusCode);
+    }
 }
 
 private static Single<Integer> service2(WebClient webClient) {
         return webClient.getAbs("http://httpstat.us/200?sleep=2000")
                 .rxSend()
-                .doOnSuccess(response -> out.println(Thread.currentThread().getName() + " service 2 invoked"))
+                .doOnSuccess(response -> out.println("[" + Thread.currentThread().getName() + "] service 2 response received"))
                 .map(HttpResponse::statusCode);
-}
+    }
 
 ```
 
-Both methods are very similar. They take **WebClient** as parameter and send HTTP request returning **Single<Integer>**.
-Integer is HTTP response code. Returning RxJava **Single** assures us that this is asynchronous and status code will be
-accessible later when it is available. This also gives us lazy evaluation, services will be invoked only if active
+Both methods are very similar. They take **WebClient** as parameter and send HTTP request 
+returning **Single\<Integer\>**.
+Where integer is an HTTP response code. Returning RxJava **Single** assures us that result is asynchronous. 
+Status code will be
+accessible later when it is available. This also gives us lazy evaluation, services will 
+get invoked only if an active
 subscription is present.
 
+---
 ## Consuming Single sources
 
-There are two sources that we will need to subscribe to. RxJava has convenient method to combine
-**Single** sources together. Simply call **.zipWith** on the first source and supply two parameters. First is the source
-to zip with and the second one is a function to consume results and return something. In this case, return type is **
-AbstractMap.SimpleEntry<Integer, Integer>** that is just a simple tuple of two integers. Thanks to Java lambdas we can
-pass this function as parameter.
+There are two sources that we will need to subscribe to. RxJava has a convenient method to combine
+**Single** sources together. We can invoke method **.zipWith** on the first source and supply two 
+parameters. The first is the source
+to zip with and the second one is a function to consume both results, process them and return something else.
+
+In this case, the return type is 
+**AbstractMap.SimpleEntry\<Integer, Integer\>** that is a simple tuple of two integers. Looks verbose, doesn't it? 
+Unfortunately, there are no better tuple or pair implementations in core Java libraries.
+
+Thanks to Java lambdas we can pass behaviour as a parameter.
 
 ```java
 
@@ -105,9 +137,11 @@ Single<AbstractMap.SimpleEntry<Integer, Integer>> tupleSource =
 
 > You may implement your own tuple or pair if **AbstractMap.SimpleEntry** feels too verbose
 
+---
+
 ## All together
 
-Finally, we can see all bits and peaces together
+Finally, we can put all bits and peaces together
 
 ```java
 // Vertx instance and web client
@@ -128,10 +162,28 @@ tupleSource
     .subscribe(Services::printResult);
     
 ```
-That was all for this time. You can find complete code on [gist](https://gist.github.com/akaliacius/1da6638f5df21fe83c13d055dd9ee679)
+Here are the results printed on the console after running the code. Both requests
+were dispatched from the same vertx event loop thread.
+The program also prints messages that the thread is not blocked every second. Finally, it prints both status 
+codes as a final result. As you can see everything happened on the same thread.
 
-Or, if you use [jbang](https://www.jbang.dev/) run it directly
+```
+[vert.x-eventloop-thread-1] is released
+[vert.x-eventloop-thread-1] is released
+[vert.x-eventloop-thread-1] service 2 response received
+[vert.x-eventloop-thread-1] is released
+[vert.x-eventloop-thread-1] is released
+[vert.x-eventloop-thread-1] is released
+[vert.x-eventloop-thread-1] service 1: response received
+[vert.x-eventloop-thread-1] Result: service1:200 service2:200
+```
+
+---
+That was all for this time. The complete code is on [gist](https://gist.github.com/akaliacius/1da6638f5df21fe83c13d055dd9ee679)
+
+You can also run the code directly with [jbang](https://www.jbang.dev/)
+
 `jbang https://gist.github.com/1da6638f5df21fe83c13d055dd9ee679`
 
-Happy coding!
+Happy reactive coding!
 
