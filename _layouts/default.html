@@ -1,20 +1,53 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<html lang="{{ page.lang | default: site.lang | default: " en" }}">
 
-  {%- include head.html -%}
+{%- include head.html -%}
 
-  <body>
-  <a href="http://www.reactivemanifesto.org/"> <img style="border: 0; position: fixed; right: 0; top:0; z-index: 9000" src="//d379ifj7s9wntv.cloudfront.net/reactivemanifesto/images/ribbons/we-are-reactive-blue-right.png"> </a>
-    {%- include header.html -%}
+<style>
+    .ribbon-img {
+        border: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 9000;
+    }
 
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
+    @media (max-width: 1000px) {
+        #main-nav {
+            margin-right: 100px;
+        }
+    }
+
+    @media (max-width: 800px) {
+        #main-nav {
+            margin-right: 150px;
+        }
+    }
+    @media (max-width: 400px) {
+        .ribbon-img{
+            display: none;
+        }
+        #main-nav {
+            margin-right: 0px;
+        }
+    }
+
+</style>
+
+<body>
+<a class="ribbon" href="http://www.reactivemanifesto.org/"> <img class="ribbon-img"
+                                                                 src="//d379ifj7s9wntv.cloudfront.net/reactivemanifesto/images/ribbons/we-are-reactive-blue-right.png">
+</a>
+{%- include header.html -%}
+
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
         {{ content }}
-      </div>
-    </main>
+    </div>
+</main>
 
-    {%- include footer.html -%}
+{%- include footer.html -%}
 
-  </body>
+</body>
 
 </html>
