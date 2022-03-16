@@ -26,6 +26,7 @@ url: "https://jgeek.dev" # the base hostname & protocol for your site, e.g. http
 twitter_username: kaliacius
 github_username: akaliacius
 linkedin_username: akaliacius
+show_excerpts: false
 
 # Build settings
 markdown: kramdown
