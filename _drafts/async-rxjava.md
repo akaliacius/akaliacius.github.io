@@ -1,7 +1,7 @@
 ---
 layout: post 
 title:  Asynchronous HTTP requests with RxJava
-description: Long requests without blocking thread 
+description: Send long blocking requests asynchronously with RxJava and Vertx 
 date:   2022-03-16 12:15:28 +0000 
 category: rxjava
 author: andrius kaliacius
